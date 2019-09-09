@@ -640,11 +640,28 @@ function _handlePubCommonId(eids, validBidRequests) {
   }
 }
 
+function _handleCustomData(eids, validBidRequests) {
+  let customData = null;
+  if (utils.deepAccess(validBidRequests, '0.userId.customData') != null) {
+    customData = validBidRequests[0].userId.customData;
+  }
+  if (customData !== null) {
+    eids.push({
+      source: 'customData',
+      uids: [{
+        'id': customData,
+        'atype': 1
+      }]
+    });
+  }
+}
+
 function _handleEids(payload, validBidRequests) {
   let eids = [];
   _handleDigitrustId(eids);
   _handleTTDId(eids, validBidRequests);
   _handlePubCommonId(eids, validBidRequests);
+  _handleCustomData(eids, validBidRequests);
   if (eids.length > 0) {
     payload.user.eids = eids;
   }
