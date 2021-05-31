@@ -667,7 +667,10 @@ function _addImpressionFPD(imp, bid) {
       * @type {(string|undefined)}
     */
     if (prop === 'pbadslot') {
-      if (typeof ortb2[prop] === 'string' && ortb2[prop]) utils.deepSetValue(imp, 'ext.data.pbadslot', ortb2[prop]);
+      if (typeof ortb2[prop] === 'string' && ortb2[prop]){
+        utils.deepSetValue(imp, 'ext.data.pbadslot', ortb2[prop]);
+        utils.deepSetValue(imp, `ext.dfp_ad_unit_code`, ortb2[prop]);
+      }
     } else if (prop === 'adserver') {
       /**
        * Copy GAM AdUnit and Name to imp
@@ -678,7 +681,7 @@ function _addImpressionFPD(imp, bid) {
         if (typeof value === 'string' && value) {
           utils.deepSetValue(imp, `ext.data.adserver.${name.toLowerCase()}`, value);
           // copy GAM ad unit id as imp[].ext.dfp_ad_unit_code
-          if (name === 'adslot') {
+          if (name === 'adslot' && value) {
             utils.deepSetValue(imp, `ext.dfp_ad_unit_code`, value);
           }
         }
