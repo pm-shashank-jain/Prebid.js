@@ -1640,6 +1640,40 @@ describe('PubMatic adapter', function () {
               expect(data.imp[0].ext.data.adserver.adslot).to.equal(adSlotValue);
               expect(data.imp[0].ext.dfp_ad_unit_code).to.equal(adSlotValue);
             });
+
+            it('should send dfp_ad_unit_code if pb adslot is present and adSlot is not present', function() {
+              let adSlotValue = 'abc';
+              bidRequests[0].ortb2Imp = {
+                ext: {
+                  data: {
+                    pbadslot: 'abcd'
+                  }
+                }
+              };
+              const request = spec.buildRequests(bidRequests, {});
+              let data = JSON.parse(request.data);
+              expect(data.imp[0].ext.dfp_ad_unit_code).to.equal('abcd');
+            });
+
+            it('should not set dfp_ad_unit_code if pb adslot is present and adSlot is also present', function() {
+              let adSlotValue = 'abc';
+              bidRequests[0].ortb2Imp = {
+                ext: {
+                  data: {
+                    adserver: {
+                      'name': 'GAM',
+                      'adslot': adSlotValue
+                    },
+                    pbadslot: 'abcd'
+                  }
+                }
+              };
+              const request = spec.buildRequests(bidRequests, {});
+              let data = JSON.parse(request.data);
+              expect(data.imp[0].ext.data.adserver.name).to.equal('GAM');
+              expect(data.imp[0].ext.data.adserver.adslot).to.equal(adSlotValue);
+              expect(data.imp[0].ext.dfp_ad_unit_code).to.equal('abcd');
+            });
           });
 
           describe('ortb2Imp.ext.data.other', function() {
