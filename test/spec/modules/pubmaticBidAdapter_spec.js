@@ -1655,7 +1655,7 @@ describe('PubMatic adapter', function () {
               expect(data.imp[0].ext.dfp_ad_unit_code).to.equal('abcd');
             });
 
-            it('should not set dfp_ad_unit_code if pb adslot is present and adSlot is also present', function() {
+            it('should override dfp_ad_unit_code if pb adslot is present and adSlot is also present', function() {
               let adSlotValue = 'abc';
               bidRequests[0].ortb2Imp = {
                 ext: {
@@ -1664,7 +1664,7 @@ describe('PubMatic adapter', function () {
                       'name': 'GAM',
                       'adslot': adSlotValue
                     },
-                    pbadslot: 'abcd'
+                    pbadslot: adSlotValue // pb adslot is updated with adserver.adslot value if present else it takes adUnit.code value
                   }
                 }
               };
@@ -1672,7 +1672,7 @@ describe('PubMatic adapter', function () {
               let data = JSON.parse(request.data);
               expect(data.imp[0].ext.data.adserver.name).to.equal('GAM');
               expect(data.imp[0].ext.data.adserver.adslot).to.equal(adSlotValue);
-              expect(data.imp[0].ext.dfp_ad_unit_code).to.equal('abcd');
+              expect(data.imp[0].ext.dfp_ad_unit_code).to.equal(adSlotValue);
             });
           });
 
